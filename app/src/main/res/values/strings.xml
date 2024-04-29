@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PokeApp</string>
+    <string name="can_t_catch_up">Can\'t catch up</string>
+    <string name="click_to_search">Click in order to search</string>
+</resources>
