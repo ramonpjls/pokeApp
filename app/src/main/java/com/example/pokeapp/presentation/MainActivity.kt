@@ -39,20 +39,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.example.pokeapp.R
 import com.example.pokeapp.ui.theme.PokeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.ImagePainter.State.Empty.painter
 import coil.compose.rememberImagePainter
-import com.example.pokeapp.R.color
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
@@ -132,9 +131,12 @@ class MainActivity() : ComponentActivity() {
                         contentDescription = null,
                     )
                 }
-                Row ( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
                     Text(
-                        text = pokeItem.name,
+                        text = pokeItem.name.toUpperCase(),
                         fontSize = 30.sp
                     )
                     Text(
@@ -143,22 +145,38 @@ class MainActivity() : ComponentActivity() {
                     )
                 }
                 Column(modifier = Modifier.padding(5.dp)) {
-                    Row(){
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         pokeItem.types.forEach { type ->
                             type.Type.firstOrNull()?.let { typeList ->
-                                Text(
-                                    text = typeList.name,
-                                    fontSize = 17.sp,
+                                Row(
                                     modifier = Modifier
-                                        .padding(4.dp)
-                                )
+                                        .padding(15.dp)
+                                        .clip(RoundedCornerShape(percent = 50))
+                                        .width(130.dp)
+                                        .height(45.dp)
+                                        .background(getTypeColor(type = typeList.name)),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    PokemonType(typeList.name)
+                                    Text(
+                                        text = typeList.name,
+                                        fontSize = 17.sp,
+                                    )
+                                }
+
                             }
                         }
-                    }
 
+                    }
+                    Spacer(modifier = Modifier.padding(5.dp))
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.fillMaxWidth()){
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text(
                             text = "Peso: ${pokeItem.weight.toString()}hg",
                             fontSize = 17.sp,
@@ -168,6 +186,7 @@ class MainActivity() : ComponentActivity() {
                             fontSize = 17.sp,
                         )
                     }
+                    Spacer(modifier = Modifier.padding(5.dp))
                     Column {
                         Text(
                             text = "Stats:",
@@ -182,9 +201,9 @@ class MainActivity() : ComponentActivity() {
                                         text = "${statList.name}: ",
                                         fontSize = 17.sp,
                                     )
+                                    
                                     LinearProgressIndicator(
                                         progress = stat.base_stat.toFloat() / 100,
-                                        color = Color.Red,
                                         modifier = Modifier
                                             .padding(5.dp)
                                             .fillMaxWidth()
@@ -205,16 +224,96 @@ class MainActivity() : ComponentActivity() {
     fun RoundedShape(
     ) {
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .clip(RoundedCornerShape(percent = 100))
-                .fillMaxWidth()
-                .height(400.dp)
-                .background(Color.Cyan)
+                .height(300.dp)
+                .fillMaxSize()
         ) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                alpha = 0.5f,
+                alignment = Alignment.Center,
+                painter = rememberImagePainter(R.drawable.pokeball),
+                contentDescription = null,
+            )
         }
+    }
+
+    @Composable
+    fun getTypeSvg(type: String): Painter {
+        return when (type) {
+            "fire" -> painterResource(R.drawable.fire)
+            "bug" -> painterResource(R.drawable.bug)
+            "dark" -> painterResource(R.drawable.dark)
+            "dragon" -> painterResource(R.drawable.dragon)
+            "electric" -> painterResource(R.drawable.electric)
+            "fairy" -> painterResource(R.drawable.fairy)
+            "fighting" -> painterResource(R.drawable.fighting)
+            "flying" -> painterResource(R.drawable.flying)
+            "ghost" -> painterResource(R.drawable.ghost)
+            "psychic" -> painterResource(R.drawable.psychic)
+            "grass" -> painterResource(R.drawable.grass)
+            "ground" -> painterResource(R.drawable.ground)
+            "ice" -> painterResource(R.drawable.ice)
+            "normal" -> painterResource(R.drawable.normal)
+            "poison" -> painterResource(R.drawable.poison)
+            "rock" -> painterResource(R.drawable.rock)
+            "steel" -> painterResource(R.drawable.steel)
+            "water" -> painterResource(R.drawable.water)
+            else -> painterResource(R.drawable.pokeball)
+        }
+    }
+
+    @Composable
+    fun getTypeColor(type: String): Color {
+        val context = LocalContext.current
+        val colorResId = when (type) {
+            "fire" -> R.color.fire
+            "water" -> R.color.water
+            "grass" -> R.color.grass
+            "bug" -> R.color.bug
+            "dark" -> R.color.dark
+            "dragon" -> R.color.dragon
+            "electric" -> R.color.electric
+            "fairy" -> R.color.fairy
+            "fighting" -> R.color.fighting
+            "flying" -> R.color.flying
+            "ghost" -> R.color.ghost
+            "psychic" -> R.color.psychic
+            "ground" -> R.color.ground
+            "ice" -> R.color.ice
+            "normal" -> R.color.normal
+            "poison" -> R.color.poison
+            "rock" -> R.color.rock
+            "steel" -> R.color.steel
+            else -> R.color.gray 
+        }
+        return Color(ContextCompat.getColor(context, colorResId))
+    }
+
+
+    @Composable
+    fun PokemonType(type: String) {
+        Row(
+            modifier = Modifier
+                .padding(10.dp)
+                .width(40.dp)
+                .height(40.dp)
+                .background(color = Color.White, shape = RoundedCornerShape(20.dp)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            val svgPainter = getTypeSvg(type)
+            Image(
+                painter = svgPainter,
+                contentDescription = "Pokemon Type",
+                modifier = Modifier
+                    .size(24.dp)
+            )
+        }
+
     }
 
 
 }
-
 
