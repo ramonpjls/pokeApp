@@ -55,6 +55,11 @@ import coil.compose.rememberImagePainter
 
 @AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
+
+    companion object {
+        var pokemonTypePosition: String = ""
+            private set
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -116,6 +121,9 @@ class MainActivity() : ComponentActivity() {
                 .fillMaxHeight()
         ) {
             mainState.pokeItem?.let { pokeItem ->
+
+                pokemonTypePosition = (pokeItem.types.firstOrNull { it.Type.isNotEmpty() }?.Type?.get(0)?.name ?: "").toString()
+
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -157,7 +165,7 @@ class MainActivity() : ComponentActivity() {
                                         .clip(RoundedCornerShape(percent = 50))
                                         .width(130.dp)
                                         .height(45.dp)
-                                        .background(getTypeColor(type = typeList.name)),
+                                        .background(getTypeColor(type = pokemonTypePosition)),
                                     horizontalArrangement = Arrangement.Start,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -201,9 +209,9 @@ class MainActivity() : ComponentActivity() {
                                         text = "${statList.name}: ",
                                         fontSize = 17.sp,
                                     )
-                                    
                                     LinearProgressIndicator(
                                         progress = stat.base_stat.toFloat() / 100,
+                                        color = getTypeColor(type = pokemonTypePosition),
                                         modifier = Modifier
                                             .padding(5.dp)
                                             .fillMaxWidth()
@@ -219,6 +227,8 @@ class MainActivity() : ComponentActivity() {
             }
         }
     }
+
+
 
     @Composable
     fun RoundedShape(
