@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">PokeApp</string>
+    <string name="Weight">Weight</string>
+    <string name="Grams">Grams</string>
+    <string name="Height">Height</string>
+    <string name="Metres">Metres</string>
+    <string name="Stats">Statistics</string>
     <string name="can_t_catch_up">Can\'t catch up</string>
     <string name="click_to_search">Click in order to search</string>
 </resources>
